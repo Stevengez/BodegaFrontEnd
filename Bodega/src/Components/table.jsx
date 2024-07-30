@@ -9,6 +9,7 @@ import Paper from '@mui/material/Paper';
 import TablePagination from '@mui/material/TablePagination';
 import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box'; 
+import DispatchButton from './botones/despachar';
 
 const TableComponent = ({ columns, data }) => {
     const [page, setPage] = useState(0);
@@ -101,6 +102,12 @@ const TableComponent = ({ columns, data }) => {
                                         </TableCell>
                                     )
                                 )}
+
+                            <TableCell align="right">
+                                    <DispatchButton hasName={Boolean(row.category)} row={row} onDelete={()=>{}} />
+                                    
+                                    
+                                </TableCell>
                             </TableRow>
                         ))}
                     </TableBody>
