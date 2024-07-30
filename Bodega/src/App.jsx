@@ -1,33 +1,59 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { useEffect, useState } from 'react'
 import './App.css'
+import { Backdrop, Button, CircularProgress } from '@mui/material'
+import BannerComponent from './Components/banner'
+import TableComponent from './Components/table'
+import { getAll } from './midleware/requests'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [data, setData] = useState([])
+  const [open, setOpen] = useState(false)
+  const [openModal, setOpenModal] = useState(false)
+  const [heroID, setHeroID] = useState(null);
+
+
+  const columns = [
+    { field: 'category', headerName: 'Category', filterable: true},
+    { field: 'entityId', headerName: 'Entity ID', align: 'right' },
+    {field: 'environment', headerName: "Environment", align: 'right', filterable: true},
+    { field: 'country', headerName: 'Country', align: 'right' , filterable: true},
+    { field: 'origin', headerName: 'Origin', align: 'right' , filterable: true},
+    { field: 'businessProcess', headerName: 'Business Process', align: 'right' },
+    { field: 'interfaceName', headerName: 'Interface Name', align: 'right' }
+];
+
+
+useEffect(() => {
+  const fetchData = async () => {
+    setOpen(true)
+    const loadData = await getAll();
+    if(loadData.status === 200){
+      setOpen(false)
+    }
+    setData(loadData.data);
+  };
+
+  fetchData();
+}, []);
+
+
 
   return (
     <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div className="Container">
+        <BannerComponent title={"Bodega"} subTitle={"Grupo 2"} />
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
+      <div className='tablePage'>
+        <TableComponent columns={columns} data={data} />
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <Backdrop
+        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={open}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
+
+     
     </>
   )
 }
